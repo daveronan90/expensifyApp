@@ -3,7 +3,7 @@ import React from "react";
 import { ExpensesSummary } from "../../components/ExpensesSummary";
 
 test("Should render ExpensesSummary with 1 expense", () => {
-  const wrapper = shallow(<ExpensesSummary />);
+  const wrapper = shallow(<ExpensesSummary expensesTotal={50} expensesCount={1} />);
 
   expect(wrapper).toMatchSnapshot();
 });
