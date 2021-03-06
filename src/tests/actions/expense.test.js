@@ -5,6 +5,7 @@ import {
   startAddExpense,
   setExpenses,
   startSetExpenses,
+  startRemoveExpense,
 } from "../../actions/expenses";
 import database from "../../firebase/firebase";
 import expenses from "../fixtures/expenses";
@@ -136,5 +137,42 @@ test("Should fetch the expenses from firebase", (done) => {
     });
 
     done();
+  });
+});
+
+test("Should remove expense from firebase", (done) => {
+  const store = createMockStore({});
+  const expensesDefault = expenses.map(
+    ({ description, note, amount, createdAt }) => ({
+      description,
+      note,
+      amount,
+      createdAt,
+    })
+  );
+
+  store.dispatch(startRemoveExpense({ id: expenses[0].id })).then(() => {
+    const actions = store.getActions();
+    expect(actions[0]).toEqual({
+      type: "REMOVE_EXPENSE",
+      id: expenses[0].id,
+    });
+
+    return database
+      .ref(`expenses`)
+      .once("value")
+      .then((snapshot) => {
+        const fetchedExpenses = [];
+
+        snapshot.forEach((childSnapshot) => {
+          fetchedExpenses.push({ ...childSnapshot.val() });
+        });
+
+        expect(fetchedExpenses).toEqual([
+          expensesDefault[1],
+          expensesDefault[2],
+        ]);
+        done();
+      });
   });
 });
