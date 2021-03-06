@@ -22,7 +22,7 @@ export const ExpensesSummary = ({ expensesCount, expensesTotal }) => {
 const mapStateToProps = ({ expenses, filters }) => {
   const visibileExpenses = selectExpenses(expenses, filters);
   return {
-    expensesCount: expenses ? 0 : visibileExpenses.length,
+    expensesCount: expenses ? visibileExpenses.length : 0,
     expensesTotal: expensesTotal(visibileExpenses),
   };
 };
